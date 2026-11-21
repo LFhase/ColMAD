@@ -1,4 +1,4 @@
-# (NeurIPS'26) Towards Scalable Oversight with Collaborative Multi-Agent Debate in Error Detection
+# (NeurIPS'26) When and Why Does Multi-Agent Debate Fail and Does It Really Underperform?
 
 <p align="center">
   <strong>ColMAD · NeurIPS 2026</strong><br>
@@ -10,7 +10,7 @@
   </a>
 </p>
 
-This repository contains the official implementation of **ColMAD** (Towards Scalable Oversight with Collaborative Multi-Agent Debate in Error Detection, **NeurIPS 2026**).
+This repository contains the official implementation of **ColMAD** from the **NeurIPS 2026** paper *When and Why Does Multi-Agent Debate Fail and Does It Really Underperform?*
 
 Detecting errors in the responses of large language models (LLMs) is central to scalable oversight, yet LLMs are unreliable at diagnosing their own mistakes without external feedback. Multi-agent debate (MAD) is a natural source of such feedback: several LLMs examine a response and cross-check each other. Prior MAD protocols, however, frame debate as a zero-sum game in which each debater tries to win rather than to find the truth. This leads to *debate hacking*: debaters mislead the judge by misreading the task or making overconfident claims, and the debate can end up below a single agent.
 
@@ -28,6 +28,7 @@ The repository includes the single-agent baseline, ColMAD, and the baselines com
 - [Extending the Repository](#extending-the-repository)
 - [Repository Structure](#repository-structure)
 - [Citation](#citation)
+- [Acknowledgements](#acknowledgements)
 
 ## Environment Setup
 
@@ -132,7 +133,14 @@ To run every protocol on the six model pairs of Table 1 (GPT-4 split, temperatur
 bash scripts/run_table1.sh
 ```
 
-The prompts and the debate flow are those of the runs reported in the paper: replaying the stored transcripts of those runs through this code reproduces every stored prompt byte for byte, and `colmad/evaluate.py` on those transcripts reproduces the Table 1 cells. For ColMAD on gpt-4o-mini:Llama-3.1-70B, gpt-4o-mini:Mistral-Small-2603 and Llama-3.1-70B:Mistral-Small-2603, the judge's quote check was run with `--quote_check lowercase_problem`; `scripts/run_table1.sh` sets it for these pairs.
+The prompts and the debate flow are those of the runs reported in the paper: replaying the stored transcripts of those runs through this code reproduces every stored prompt byte for byte, and `colmad/evaluate.py` on those transcripts reproduces the Table 1 cells.
+
+### Settings of the Reported Runs
+
+Two details of the runs reported in the paper:
+
+- **Label corrections.** Six gold labels of the GPT-4 split were corrected after manual re-inspection: three in Math (two set to `error`, one to `no_error`) and three in Fact (all set to `no_error`). The sample ids are listed in `colmad/labels.py`, and `colmad/evaluate.py` scores against the corrected labels. The Llama 2 split is unchanged.
+- **Quote check of the ColMAD judge.** Before the judge reads the transcript, every `<quote>` in a debater's argument is tagged as verified if it occurs in the problem. By default (`--quote_check insensitive`) the quote and the problem are both lowercased before the comparison. The ColMAD runs on gpt-4o-mini:Llama-3.1-70B, gpt-4o-mini:Mistral-Small-2603 and Llama-3.1-70B:Mistral-Small-2603 lowercased only the problem (`--quote_check lowercase_problem`), so a quote containing a capital letter was tagged as unverified; the other three pairs used the default. `scripts/run_table1.sh` uses the same setting for each pair.
 
 Model outputs from API endpoints are not deterministic even at temperature 0, and providers change their serving stacks, so a re-run gives numbers close to, but not equal to, those in the paper. Mistral-7B-Instruct-v0.3 and QwQ-32B are no longer served by the providers used for the paper.
 
@@ -185,7 +193,7 @@ If you use this repository, please cite our paper and the ReaLMistake benchmark.
 
 ```bibtex
 @inproceedings{chen2026colmad,
-  title     = {Towards Scalable Oversight with Collaborative Multi-Agent Debate in Error Detection},
+  title     = {When and Why Does Multi-Agent Debate Fail and Does It Really Underperform?},
   author    = {Chen, Yongqiang and Niu, Gang and Cheng, James and Han, Bo and Sugiyama, Masashi},
   booktitle = {The Fortieth Annual Conference on Neural Information Processing Systems},
   year      = {2026}
@@ -200,6 +208,10 @@ If you use this repository, please cite our paper and the ReaLMistake benchmark.
   year      = {2024}
 }
 ```
+
+## Acknowledgements
+
+The code in `math_safety/` is built on [MAD_as_TTS](https://github.com/euiin/MAD_as_TTS) by Yang et al. (2025). We thank the authors for releasing it; if you use that part of this repository, please also cite their paper (the BibTeX entry is in [`math_safety/README.md`](math_safety/README.md)). We also thank the authors of [ReaLMistake](https://github.com/psunlpgroup/ReaLMistake) for the benchmark and the code from which our single-agent prompt and label parser are adapted.
 
 ## License
 

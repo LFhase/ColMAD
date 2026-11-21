@@ -2,7 +2,7 @@
 
 This directory runs the math and safety experiments of Table 3: ColMAD, CosMAD and single-agent baselines with Qwen2.5-7B-Instruct and Llama-3.1-8B-Instruct on GSM8K, AIME-2024 and 37 harmful prompts (Anthropic).
 
-The code is adapted from [MAD_as_TTS](https://github.com/euiin/MAD_as_TTS) (Yang et al., *Revisiting Multi-Agent Debate as Test-Time Scaling: A Systematic Study of Conditional Effectiveness*, 2025), commit `bd9bded`. The files here are the versions that produced the runs reported in Table 3.
+The code is adapted from [MAD_as_TTS](https://github.com/euiin/MAD_as_TTS) (Yang et al., *Revisiting Multi-Agent Debate as Test-Time Scaling: A Systematic Study of Conditional Effectiveness*, 2025), commit `bd9bded`; we thank the authors for releasing it. The files here are the versions that produced the runs reported in Table 3.
 
 ## Protocols
 
