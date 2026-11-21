@@ -3,3 +3,5 @@ data/
 outputs/
 __pycache__/
 *.pyc
+math_safety/results*/
+math_safety/conversation_backup.json

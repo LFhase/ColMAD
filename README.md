@@ -16,7 +16,7 @@ Detecting errors in the responses of large language models (LLMs) is central to 
 
 ColMAD reframes MAD as a non-zero-sum game. The two debaters still defend opposite answers, but they are asked to criticize each other in a supportive way, to surface decisive errors on either side and to adopt valid points of the other debater, so that the judge decides from more complete evidence.
 
-The repository includes the single-agent baseline, ColMAD, and the baselines compared in the paper (competitive debate, multi-persona debate with a moderator, society-of-minds debate and voting), together with the evaluation used for the paper's tables.
+The repository includes the single-agent baseline, ColMAD, and the baselines compared in the paper (competitive debate, multi-persona debate with a moderator, society-of-minds debate and voting), together with the evaluation used for the paper's tables. The math and safety experiments (Table 3) are in [`math_safety/`](math_safety/README.md).
 
 ## Table of Contents
 
@@ -24,6 +24,7 @@ The repository includes the single-agent baseline, ColMAD, and the baselines com
 - [Data Preparation](#data-preparation)
 - [Running the Protocols](#running-the-protocols)
 - [Evaluation and Reproduction](#evaluation-and-reproduction)
+- [Math and Safety (Table 3)](#math-and-safety-table-3)
 - [Extending the Repository](#extending-the-repository)
 - [Repository Structure](#repository-structure)
 - [Citation](#citation)
@@ -135,6 +136,10 @@ The prompts and the debate flow are those of the runs reported in the paper: rep
 
 Model outputs from API endpoints are not deterministic even at temperature 0, and providers change their serving stacks, so a re-run gives numbers close to, but not equal to, those in the paper. Mistral-7B-Instruct-v0.3 and QwQ-32B are no longer served by the providers used for the paper.
 
+## Math and Safety (Table 3)
+
+`math_safety/` runs ColMAD, CosMAD and single-agent baselines with Qwen2.5-7B-Instruct and Llama-3.1-8B-Instruct on GSM8K, AIME-2024 and 37 harmful prompts, with local vLLM models and gpt-4o-mini as the safety judge. It is adapted from [MAD_as_TTS](https://github.com/euiin/MAD_as_TTS) (Yang et al., 2025) and has its own environment (Python 3.11, vLLM 0.8.0); setup, data and commands are in [`math_safety/README.md`](math_safety/README.md).
+
 ## Extending the Repository
 
 ### Adding a Model
@@ -165,8 +170,13 @@ A protocol is a `run(single_a, single_b, j1, j2, ...)` function that takes the t
 │   ├── run_mp.py           # MP
 │   ├── run_cosmad.py       # CosMAD
 │   └── evaluate.py         # scores and Voting
-└── scripts/
-    └── run_table1.sh       # all protocols on the six pairs of Table 1
+├── scripts/
+│   └── run_table1.sh       # all protocols on the six pairs of Table 1
+└── math_safety/            # Table 3: math (GSM8K, AIME-2024) and safety, vLLM models
+    ├── README.md
+    ├── requirements.txt
+    ├── src/                # inference_*.py (single agent, CosMAD, ColMAD), evaluation_*.py, math_parser.py, prompt templates
+    └── scripts/            # serve.sh, run_math.sh, run_safety.sh
 ```
 
 ## Citation
@@ -193,4 +203,4 @@ If you use this repository, please cite our paper and the ReaLMistake benchmark.
 
 ## License
 
-The code is released under the MIT License (`LICENSE`). The single-agent prompt and the label parser are adapted from the ReaLMistake code (MIT). The ReaLMistake data is distributed by its authors under CC BY-SA 4.0 and is not included in this repository.
+The code is released under the MIT License (`LICENSE`). The single-agent prompt and the label parser are adapted from the ReaLMistake code (MIT). The ReaLMistake data is distributed by its authors under CC BY-SA 4.0 and is not included in this repository. The code in `math_safety/` is adapted from [MAD_as_TTS](https://github.com/euiin/MAD_as_TTS), whose repository does not state a license; the MIT License covers our changes there.
